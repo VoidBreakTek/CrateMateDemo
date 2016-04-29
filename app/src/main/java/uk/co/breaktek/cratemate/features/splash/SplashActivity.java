@@ -1,6 +1,8 @@
 package uk.co.breaktek.cratemate.features.splash;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 
 import javax.inject.Inject;
 
@@ -11,9 +13,18 @@ import uk.co.breaktek.cratemate.di.base.DaggerActivity;
 import uk.co.breaktek.cratemate.di.components.activity.ActivityComponent;
 import uk.co.breaktek.cratemate.di.components.activity.SplashComponent;
 import uk.co.breaktek.cratemate.di.modules.activity.SplashModule;
+import uk.co.breaktek.cratemate.features.home.HomeActivity;
 
 public class SplashActivity extends DaggerActivity implements SplashView {
     @Inject SplashPresenter mPresenter;
+    private final Handler mHandler = new Handler();
+    private final Runnable mHomeScreenRunnable = new Runnable() {
+        @Override
+        public void run() {
+            startHomeActivity();
+            finish();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,5 +46,20 @@ public class SplashActivity extends DaggerActivity implements SplashView {
 
         component.inject(this);
         return component;
+    }
+
+    @Override
+    public void showHomeScreen(int delayMs) {
+        mHandler.postDelayed(mHomeScreenRunnable, delayMs);
+    }
+
+    private void startHomeActivity(){
+        startActivity(new Intent(this, HomeActivity.class));
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mHandler.removeCallbacks(mHomeScreenRunnable);
     }
 }

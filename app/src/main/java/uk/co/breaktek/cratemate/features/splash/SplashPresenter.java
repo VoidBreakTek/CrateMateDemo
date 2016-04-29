@@ -13,6 +13,7 @@ import uk.co.breaktek.cratemate.mvp.ActivityPresenter;
 @Singleton
 public class SplashPresenter implements ActivityPresenter<SplashView> {
     public static final String TAG = SplashPresenter.class.getSimpleName();
+    private static int SPLASH_TIME_OUT = 3000;
 
     private SplashView mView;
 
@@ -20,11 +21,13 @@ public class SplashPresenter implements ActivityPresenter<SplashView> {
     public SplashPresenter() {
         // Empty constructor with @Inject annotation allows Dagger to construct new instances on
         // request without an explicit module @Provides method
+
     }
 
     @Override
     public void initialize() {
         Log.d(TAG, "Presenter initialize");
+        mView.showHomeScreen(SPLASH_TIME_OUT);
     }
 
     @Override
