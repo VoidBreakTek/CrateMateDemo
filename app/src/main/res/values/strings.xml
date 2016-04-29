@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">CrateMate</string>
+    <string name="activity_splash_welcome_label">Welcome!</string>
 </resources>

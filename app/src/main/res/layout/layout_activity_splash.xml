@@ -8,10 +8,11 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="uk.co.breaktek.cratemate.SplashActivity">
+    tools:context=".features.splash.SplashActivity">
 
     <TextView
+        android:id="@+id/activity_splash_textview_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"/>
+        android:text="@string/activity_splash_welcome_label"/>
 </RelativeLayout>
