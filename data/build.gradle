@@ -46,4 +46,7 @@ dependencies {
     testCompile testDependencies.nevado
     testCompile testDependencies.mockitoCore
     testCompile testDependencies.robolectric
+
+    compile project(':common')
+    compile project(':domain')
 }
