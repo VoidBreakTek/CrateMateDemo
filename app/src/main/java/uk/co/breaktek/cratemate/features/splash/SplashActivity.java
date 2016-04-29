@@ -16,7 +16,6 @@ import uk.co.breaktek.cratemate.di.modules.activity.SplashModule;
 import uk.co.breaktek.cratemate.features.home.HomeActivity;
 
 public class SplashActivity extends DaggerActivity implements SplashView {
-    @Inject SplashPresenter mPresenter;
     private final Handler mHandler = new Handler();
     private final Runnable mHomeScreenRunnable = new Runnable() {
         @Override
@@ -25,6 +24,8 @@ public class SplashActivity extends DaggerActivity implements SplashView {
             finish();
         }
     };
+
+    @Inject SplashPresenter mPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +54,7 @@ public class SplashActivity extends DaggerActivity implements SplashView {
         mHandler.postDelayed(mHomeScreenRunnable, delayMs);
     }
 
-    private void startHomeActivity(){
+    private void startHomeActivity() {
         startActivity(new Intent(this, HomeActivity.class));
     }
 
@@ -61,5 +62,14 @@ public class SplashActivity extends DaggerActivity implements SplashView {
     protected void onStop() {
         super.onStop();
         mHandler.removeCallbacks(mHomeScreenRunnable);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // This Activity is finished when Paused as a precaution so the Splash screen cannot be
+        // interrupted when backgrounded to ensure a full, stable startup is completed before
+        // continuing
+        finish();
     }
 }
