@@ -1,0 +1,49 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.neenbedankt.android-apt'
+
+android {
+    compileSdkVersion crateMateConfig.compileSdkVersion
+    buildToolsVersion crateMateConfig.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion crateMateConfig.minSdkVersion
+        targetSdkVersion crateMateConfig.targetSdkVersion
+        versionCode crateMateConfig.dataVersionCode
+        versionName crateMateConfig.dataVersionName
+    }
+
+    //There are known lint exceptions in Dagger2 compiler transitive dependencies which are propagated to our linting. This closure will disable the checks for that lib.
+    lintOptions {
+        lintConfig rootProject.file('gradlescripts/lint.xml')
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile project(':domain')
+
+    compile coreDependencies.rxJava
+    compile coreDependencies.rxAndroid
+    compile coreDependencies.apacheCommons
+    compile coreDependencies.okHttpClient
+    compile coreDependencies.butterknife
+    compile coreDependencies.dagger2
+    provided coreDependencies.jsr250
+    apt(coreDependencies.dagger2Compiler) {
+        exclude module: 'guava'
+    }
+
+    compile supportDependencies.multidex
+
+    testCompile testDependencies.junit
+    testCompile testDependencies.nevado
+    testCompile testDependencies.mockitoCore
+    testCompile testDependencies.robolectric
+}

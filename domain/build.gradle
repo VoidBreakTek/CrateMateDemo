@@ -1,0 +1,19 @@
+apply plugin: 'java'
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    //DI dependencies
+    compile(coreDependencies.dagger2Compiler) {
+        exclude module: 'guava'
+    }
+    compile coreDependencies.glassfishAnnotation
+    compile coreDependencies.dagger2
+
+    //Rx dependencies
+    compile coreDependencies.rxJava
+
+    //Test dependencies
+    testCompile testDependencies.mockitoCore
+    testCompile testDependencies.junit
+    testCompile "org.robolectric:shadows-multidex:3.0"
+}

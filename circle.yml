@@ -1,0 +1,40 @@
+machine:
+  java:
+    version: oraclejdk8
+  environment:
+    ANDROID_HOME: /usr/local/android-sdk-linux
+
+dependencies:
+  pre:
+    - chmod +x gradlew
+  cache_directories:
+    - ~/.android
+
+  override:
+    - echo y | android list target
+    - echo y | android list sdk --all --extended
+    - echo y | android update sdk --no-ui --all --filter "tools"
+    - echo y | android update sdk --no-ui --all --filter "tools-preview"
+    - echo y | android update sdk --no-ui --all --filter "platform-tools-preview"
+    - echo y | android update sdk --no-ui --all --filter "build-tools-24.0.0-preview"
+    - echo y | android update sdk --no-ui --all --filter "build-tools-23.0.2"
+    - echo y | android update sdk --no-ui --all --filter "android-N"
+    - echo y | android update sdk --no-ui --all --filter "extra-android-m2repository"
+    - echo y | android update sdk --no-ui --all --filter "extra-android-support"
+    - echo y | android update sdk --no-ui --all --filter "extra-google-google_play_services"
+    - echo y | android update sdk --no-ui --all --filter "extra-google-m2repository"
+test:
+  pre:
+    - chmod +x gradlew
+  override:
+    - ./gradlew clean
+    # preDex disabled due to CircleCI OOM issue. Preventing parallel workers by setting max to
+    # avoid container overload. Fiddle later to speed up builds but for now it's all about stability
+    - ./gradlew build -PpreDexEnable=false -Pcom.android.build.threadPoolSize=1 -Dorg.gradle.parallel=false -Dorg.gradle.jvmargs="-Xms512m -Xmx512m" -Dorg.gradle.daemon=false
+    # Copy results
+    - cp -r app/build/outputs $CIRCLE_ARTIFACTS
+    - cp -r app/build/test-results/* $CIRCLE_TEST_REPORTS
+    - cp -r data/build/outputs $CIRCLE_ARTIFACTS
+    - cp -r data/build/test-results/* $CIRCLE_TEST_REPORTS
+    - cp -r domain/build/libs $CIRCLE_ARTIFACTS
+    - cp -r domain/build/test-results/* $CIRCLE_TEST_REPORTS

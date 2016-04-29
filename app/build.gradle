@@ -1,0 +1,74 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
+
+
+android {
+    compileSdkVersion crateMateConfig.compileSdkVersion
+    buildToolsVersion crateMateConfig.buildToolsVersion
+
+    defaultConfig {
+        applicationId "uk.co.breaktek.cratemate"
+        minSdkVersion crateMateConfig.minSdkVersion
+        targetSdkVersion crateMateConfig.targetSdkVersion
+        versionCode crateMateConfig.appVersionCode
+        versionName crateMateConfig.appVersionName
+        // Enabling multidex support.
+        multiDexEnabled true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    //Settings to 2g to not GC overhead limit on dex but also not hit CircleCI 4g total limit
+    dexOptions {
+        preDexLibraries = false
+        javaMaxHeapSize "2g"
+    }
+
+    //There are known lint exceptions in Dagger2 compiler transitive dependencies which are propagated to our linting. This closure will disable the checks for that lib.
+    lintOptions {
+        lintConfig rootProject.file('gradlescripts/lint.xml')
+    }
+
+    packagingOptions {
+        //Many libs include metainf that isnt currently stripped correctly by gradle
+        //for Android. Common metainf files are set to be ignored via this script
+        apply from: rootProject.file('gradlescripts/exclude-metainf.gradle')
+    }
+}
+
+dependencies {
+    compile 'com.android.support:appcompat-v7:23.3.0'
+
+    //Local lib dependencies
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    //Rx dependencies
+    compile coreDependencies.rxJava
+    compile coreDependencies.rxAndroid
+
+    //DI dependencies
+    compile coreDependencies.butterknife
+    compile coreDependencies.dagger2
+    provided coreDependencies.jsr250
+    apt 'com.google.guava:guava:19.0'
+    apt(coreDependencies.dagger2Compiler)
+
+    //3rd party view dependencies
+    compile coreDependencies.picasso
+
+    //Test dependencies
+    testCompile testDependencies.nevado
+    testCompile testDependencies.mockitoCore
+    testCompile testDependencies.okHttpMockServer
+    testCompile testDependencies.robolectric
+    testCompile testDependencies.junit
+    testCompile testDependencies.hamcrest
+    testCompile "org.robolectric:shadows-multidex:3.0"
+
+    //Local module dependencies
+    compile project(':domain')
+}
