@@ -16,4 +16,6 @@ dependencies {
     testCompile testDependencies.mockitoCore
     testCompile testDependencies.junit
     testCompile "org.robolectric:shadows-multidex:3.0"
+
+    compile project(':common')
 }
