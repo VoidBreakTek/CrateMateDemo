@@ -1,5 +1,5 @@
 #CrateMate#
-Full stack practise project.
+Full stack practice project.
 
 CrateMate will be a tracklist builder with harmonic Camelot notation harmonic mixing hints as well as suggestions based on what 
 other people are playing in their sets with your favourite tracks!
